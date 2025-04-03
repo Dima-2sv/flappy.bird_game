@@ -1,12 +1,12 @@
-//доска
+// Доска
 let board;
 let boardWidth = 450;
 let boardHeight = 700;
 let context;
 
-//птица
+// Птица
 let birdWidth = 40;
-let birdHeight = 35;
+let birdHeight = 30;
 let birdX = boardWidth / 8;
 let birdY = boardHeight / 2;
 let birdImg;
@@ -18,17 +18,17 @@ let bird = {
     height: birdHeight
 };
 
-//трубы
+// Трубы
 let pipeArray = [];
 let pipeWidth = 64;
 let pipeHeight = 512;
-let pipeX = boardWidth; 
+let pipeX = boardWidth;
 let pipeY = 0;
 
 let topPipeImg;
 let bottomPipeImg;
 
-//физика
+// Физика
 let velocityX = -2;
 let velocityY = -8;
 let gravity = 0.4;
@@ -43,7 +43,7 @@ window.onload = function () {
     board.width = boardWidth;
     context = board.getContext("2d");
 
-    //загрузка изображений
+    // Загрузка изображений
     birdImg = new Image();
     birdImg.src = "./flappybird.png";
     birdImg.onload = function () {
@@ -60,40 +60,99 @@ window.onload = function () {
     setInterval(placePipes, 1500);
     document.addEventListener("keydown", moveBird);
 
-    // Добавить кнопку перезапуска
+    // Создание кнопки перезапуска
+    createRestartButton();
+
+    // Добавить обработчики событий для фокуса и потери фокуса
+    window.addEventListener("blur", pauseGame);
+    window.addEventListener("focus", resumeGame);
+};
+
+// Функция для создания кнопки перезапуска
+function createRestartButton() {
     const restartButton = document.createElement("button");
     restartButton.id = "restart-button";
     restartButton.innerText = "Перезапуск";
-    restartButton.style.display = "none"; // Изначально скрыта
-    restartButton.style.position = "absolute";
-    restartButton.style.top = "50%";
-    restartButton.style.left = "50%";
-    restartButton.style.transform = "translate(-50%, -50%)";
-    restartButton.style.padding = "10px 20px";
-    restartButton.style.fontSize = "20px";
-    restartButton.style.cursor = "pointer";
+
+    class RestartButton {
+        constructor() {
+            this.button = document.createElement("button");
+            this.button.innerText = "Перезапустить игру"; // Текст на кнопке
+    
+            // Стилизация кнопки
+            this.button.style.display = "none"; // Скрыть кнопку по умолчанию
+            this.button.style.padding = "10px 20px";
+            this.button.style.fontSize = "20px";
+            this.button.style.color = "white";
+            this.button.style.backgroundColor = "#ff4757"; // Красный цвет
+            this.button.style.border = "none";
+            this.button.style.borderRadius = "5px";
+            this.button.style.cursor = "pointer";
+    
+            // Позиционирование кнопки
+            this.button.style.position = "absolute";
+            this.button.style.top = "50%";
+            this.button.style.left = "50%";
+            this.button.style.transform = "translate(-50%, -50%)";
+    
+            // Эффект при наведении на кнопку
+            this.button.onmouseover = () => {
+                this.button.style.backgroundColor = "#ff6b81"; // Более светлый красный при наведении 
+            };
+            
+            this.button.onmouseout = () => {
+                this.button.style.backgroundColor = "#ff4757"; // Вернуть цвет при уходе курсора 
+            };
+    
+            // Добавляем кнопку на страницу
+            document.body.appendChild(this.button);
+    
+            // Привязываем обработчик события нажатия на кнопку
+            this.button.addEventListener("click", () => {
+                restartGame();
+                this.hide(); // Скрыть кнопку после нажатия
+            });
+        }
+    
+        show() {
+            this.button.style.display = "block"; // Показать кнопку
+        }
+    
+        hide() {
+            this.button.style.display = "none"; // Скрыть кнопку
+        }
+    }
+
+    // Добавляем кнопку на страницу
     document.body.appendChild(restartButton);
 
+    // Привязываем обработчик события нажатия на кнопку
     restartButton.addEventListener("click", restartGame);
-};
+}
 
+// Обновление игры
 function update() {
     requestAnimationFrame(update);
+
     if (gameOver) {
         return;
     }
+
     context.clearRect(0, 0, board.width, board.height);
 
-    //птица
+    // Птица
     velocityY += gravity;
     bird.y = Math.max(bird.y + velocityY, 0);
+
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
     if (bird.y > board.height) {
         gameOver = true;
+        document.getElementById("restart-button").style.display = "block"; // Показать кнопку при падении
+        return;
     }
 
-    //трубы
+    // Трубы
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
@@ -106,15 +165,16 @@ function update() {
 
         if (detectCollision(bird, pipe)) {
             gameOver = true;
+            document.getElementById("restart-button").style.display = "block"; // Показать кнопку при столкновении
         }
     }
 
-    //очистка труб
+    // Очистка труб
     while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
         pipeArray.shift();
     }
 
-    //счёт
+    // Счёт
     context.fillStyle = "white";
     context.font = "45px sans-serif";
     context.fillText(score, 5, 45);
@@ -122,23 +182,23 @@ function update() {
     if (gameOver) {
         context.fillText("ИГРА ОКОНЧЕНА", 5, 90);
 
-        // Обновление рекорда
         if (score > highScore) {
             highScore = score;
         }
+
         context.fillText(`Рекорд: ${highScore}`, 5, 140);
 
-        // Показать кнопку перезапуска
-        document.getElementById("restart-button").style.display = "block";
+        document.getElementById("restart-button").style.display = "block"; // Показать кнопку перезапуска 
     }
 }
+// Размещение труб
 function placePipes() {
     if (gameOver) {
         return;
     }
 
-    let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2); // Случайная высота трубы
-    let openingSpace = board.height / 5; // Уменьшенное расстояние между трубами
+    let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
+    let openingSpace = board.height / 5;
 
     let topPipe = {
         img: topPipeImg,
@@ -148,7 +208,7 @@ function placePipes() {
         height: pipeHeight,
         passed: false
     };
-    pipeArray.push(topPipe);
+    // Создание нижней трубы
 
     let bottomPipe = {
         img: bottomPipeImg,
@@ -158,21 +218,23 @@ function placePipes() {
         height: pipeHeight,
         passed: false
     };
+
+    pipeArray.push(topPipe);
     pipeArray.push(bottomPipe);
 }
 
-
+// Движение птицы
 function moveBird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-        velocityY = -6; // Прыжок
+        velocityY = -6;
 
-        // Скрыть кнопку перезапуска при рестарте игры
         if (gameOver) {
             restartGame();
         }
     }
 }
 
+// Перезапуск игры
 function restartGame() {
     bird.y = birdY;
     pipeArray = [];
@@ -180,15 +242,23 @@ function restartGame() {
     gameOver = false;
     velocityY = 0;
 
-    // Скрыть кнопку перезапуска
-    document.getElementById("restart-button").style.display = "none";
+    document.getElementById("restart-button").style.display = "none"; // Скрыть кнопку перезапуска
 }
+
+// Проверка на столкновение между птицей и трубами
 
 function detectCollision(a, b) {
     return (
         a.x < b.x + b.width &&
         a.x + a.width > b.x &&
         a.y < b.y + b.height &&
-        a.y + a.height > b.y
-    );
+        a.y + a.height > b.y);
 }
+
+// Пауза игры
+
+function pauseGame() { gameOver = true; }
+
+// Возобновление игры
+
+function resumeGame() { if (gameOver) { restartGame(); } }
