@@ -78,7 +78,7 @@ function createRestartButton() {
         constructor() {
             this.button = document.createElement("button");
             this.button.innerText = "Перезапустить игру"; // Текст на кнопке
-    
+
             // Стилизация кнопки
             this.button.style.display = "none"; // Скрыть кнопку по умолчанию
             this.button.style.padding = "10px 20px";
@@ -88,36 +88,36 @@ function createRestartButton() {
             this.button.style.border = "none";
             this.button.style.borderRadius = "5px";
             this.button.style.cursor = "pointer";
-    
+
             // Позиционирование кнопки
             this.button.style.position = "absolute";
             this.button.style.top = "50%";
             this.button.style.left = "50%";
             this.button.style.transform = "translate(-50%, -50%)";
-    
+
             // Эффект при наведении на кнопку
             this.button.onmouseover = () => {
                 this.button.style.backgroundColor = "#ff6b81"; // Более светлый красный при наведении 
             };
-            
+
             this.button.onmouseout = () => {
                 this.button.style.backgroundColor = "#ff4757"; // Вернуть цвет при уходе курсора 
             };
-    
+
             // Добавляем кнопку на страницу
             document.body.appendChild(this.button);
-    
+
             // Привязываем обработчик события нажатия на кнопку
             this.button.addEventListener("click", () => {
                 restartGame();
                 this.hide(); // Скрыть кнопку после нажатия
             });
         }
-    
+
         show() {
             this.button.style.display = "block"; // Показать кнопку
         }
-    
+
         hide() {
             this.button.style.display = "none"; // Скрыть кнопку
         }
@@ -185,7 +185,6 @@ function update() {
         if (score > highScore) {
             highScore = score;
         }
-
         context.fillText(`Рекорд: ${highScore}`, 5, 140);
 
         document.getElementById("restart-button").style.display = "block"; // Показать кнопку перезапуска 
@@ -222,7 +221,6 @@ function placePipes() {
     pipeArray.push(topPipe);
     pipeArray.push(bottomPipe);
 }
-
 // Движение птицы
 function moveBird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
@@ -233,7 +231,6 @@ function moveBird(e) {
         }
     }
 }
-
 // Перезапуск игры
 function restartGame() {
     bird.y = birdY;
@@ -244,7 +241,6 @@ function restartGame() {
 
     document.getElementById("restart-button").style.display = "none"; // Скрыть кнопку перезапуска
 }
-
 // Проверка на столкновение между птицей и трубами
 
 function detectCollision(a, b) {
@@ -254,9 +250,7 @@ function detectCollision(a, b) {
         a.y < b.y + b.height &&
         a.y + a.height > b.y);
 }
-
 // Пауза игры
-
 function pauseGame() { gameOver = true; }
 
 // Возобновление игры
