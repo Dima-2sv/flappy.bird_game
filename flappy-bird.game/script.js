@@ -5,7 +5,7 @@ let boardHeight = 700;
 let context;
 
 // Птица
-let birdWidth = 40;
+let birdWidth = 35;
 let birdHeight = 30;
 let birdX = boardWidth / 8;
 let birdY = boardHeight / 2;
@@ -29,9 +29,9 @@ let topPipeImg;
 let bottomPipeImg;
 
 // Физика
-let velocityX = -2;
-let velocityY = -8;
-let gravity = 0.4;
+let velocityX = -1.5;
+let velocityY = -1;
+let gravity = 0.1;
 
 let gameOver = false;
 let score = 0;
@@ -224,7 +224,7 @@ function placePipes() {
 // Движение птицы
 function moveBird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-        velocityY = -6;
+        velocityY = -4;
 
         if (gameOver) {
             restartGame();
