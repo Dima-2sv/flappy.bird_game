@@ -29,9 +29,9 @@ let topPipeImg;
 let bottomPipeImg;
 
 // Физика
-let velocityX = -1.5;
-let velocityY = -1;
-let gravity = 0.1;
+let velocityX = -4;// Скорость движения труб по оси X (отрицательное значение для движения влево)
+let velocityY = -8 ;// Вертикальная скорость птицы (отрицательное значение для подъёма)
+let gravity = 0.4;// Сила тяжести, которая влияет на птицу
 
 let gameOver = false;
 let score = 0;
@@ -222,7 +222,7 @@ function placePipes() {
 // Движение птицы
 function moveBird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-        velocityY = -4;
+        velocityY = -6;
 
         if (gameOver) {
             restartGame();
