@@ -45,16 +45,13 @@ window.onload = function () {
 
     // Загрузка изображений
     birdImg = new Image();
-    birdImg.src = "./flappybird.png";
-    birdImg.onload = function () {
-        context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-    };
+    birdImg.src = "./Images/flappybird.png"; 
 
     topPipeImg = new Image();
-    topPipeImg.src = "./toppipe.png";
+    topPipeImg.src = "./Images/toppipe.png";
 
     bottomPipeImg = new Image();
-    bottomPipeImg.src = "./bottompipe.png";
+    bottomPipeImg.src = "./Images/bottompipe.png"; 
 
     requestAnimationFrame(update);
     setInterval(placePipes, 1500);
@@ -190,6 +187,7 @@ function update() {
         document.getElementById("restart-button").style.display = "block"; // Показать кнопку перезапуска 
     }
 }
+
 // Размещение труб
 function placePipes() {
     if (gameOver) {
@@ -207,7 +205,6 @@ function placePipes() {
         height: pipeHeight,
         passed: false
     };
-    // Создание нижней трубы
 
     let bottomPipe = {
         img: bottomPipeImg,
@@ -221,6 +218,7 @@ function placePipes() {
     pipeArray.push(topPipe);
     pipeArray.push(bottomPipe);
 }
+
 // Движение птицы
 function moveBird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
@@ -231,6 +229,7 @@ function moveBird(e) {
         }
     }
 }
+
 // Перезапуск игры
 function restartGame() {
     bird.y = birdY;
@@ -241,18 +240,19 @@ function restartGame() {
 
     document.getElementById("restart-button").style.display = "none"; // Скрыть кнопку перезапуска
 }
-// Проверка на столкновение между птицей и трубами
 
+// Проверка на столкновение между птицей и трубами
 function detectCollision(a, b) {
     return (
         a.x < b.x + b.width &&
         a.x + a.width > b.x &&
         a.y < b.y + b.height &&
-        a.y + a.height > b.y);
+        a.y + a.height > b.y
+    );
 }
+
 // Пауза игры
 function pauseGame() { gameOver = true; }
 
 // Возобновление игры
-
 function resumeGame() { if (gameOver) { restartGame(); } }
